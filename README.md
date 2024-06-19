@@ -1,0 +1,1 @@
+# the-strategy-squad-backend
