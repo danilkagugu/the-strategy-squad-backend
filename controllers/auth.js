@@ -14,10 +14,13 @@ export const register = async (req, res, next) => {
     if (error) {
       throw HttpError(400, error.message);
     }
-    const { email, password } = req.body;
+    const { email, password, repeatPassword } = req.body;
 
     const user = await User.findOne({ email });
     if (user) throw HttpError(409, "Email in use");
+
+    if (password !== repeatPassword)
+      throw HttpError(400, "Password is not correct");
 
     const hashPassword = await bcrypt.hash(password, 10);
 
