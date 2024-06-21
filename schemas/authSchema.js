@@ -7,3 +7,8 @@ export const authSchema = Joi.object({
   repeatPassword: Joi.string().min(6).required(),
   email: Joi.string().pattern(emailRegexp).required(),
 });
+
+export const loginSchema = Joi.object({
+  password: Joi.string().min(6).required(),
+  email: Joi.string().pattern(emailRegexp).required(),
+});
