@@ -1,6 +1,6 @@
 import User from "../models/user.js";
 import bcrypt from "bcryptjs";
-import { authSchema } from "../schemas/authSchema.js";
+import { authSchema, loginSchema } from "../schemas/authSchema.js";
 import HttpError from "../helpers/HttpError.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -26,7 +26,7 @@ export const register = async (req, res, next) => {
 
     const newUser = await User.create({ ...req.body, password: hashPassword });
     res.status(201).json({
-      user: { email: newUser.email },
+      user: { id: newUser._id, email: newUser.email },
     });
   } catch (error) {
     next(error);
@@ -35,7 +35,7 @@ export const register = async (req, res, next) => {
 
 export const login = async (req, res, next) => {
   try {
-    const { error } = authSchema.validate(req.body);
+    const { error } = loginSchema.validate(req.body);
     if (error) {
       throw HttpError(400, error.message);
     }

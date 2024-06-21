@@ -44,3 +44,5 @@ Create a `.env` file in the root directory and add the variables described in .e
    ```
 
 2. The application should now be running at `http://localhost:PORT`. (PORT is a variable added to .env file)
+
+3. The swagger documentation should now be running at `http://localhost:PORT/api-docs` or `https://the-strategy-squad-backend.onrender.com/api-docs`
