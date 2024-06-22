@@ -9,7 +9,7 @@
       "url": "https://opensource.org/licenses/MIT"
     }
   },
-  "consumes": ["application/json"],
+  "consumes": ["application/json", "multipart/form-data"],
   "produces": ["application/json"],
   "servers": [
     { "url": "http://localhost:3000/api" },
@@ -128,7 +128,6 @@
         "summary": "Current user info",
         "parameters": [],
         "security": [{ "Bearer": [] }],
-        "requestBody": [{ "Bearer": [] }],
         "responses": {
           "200": {
             "description": "Successful operation",
@@ -145,6 +144,221 @@
             "content": {
               "application/json": {}
             }
+          }
+        }
+      }
+    },
+    "/users/update": {
+      "patch": {
+        "tags": ["Auth"],
+        "summary": "Update user info",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Login's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentUserResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": "User unauthorized",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/water": {
+      "post": {
+        "tags": ["Water"],
+        "summary": "Create a record about a portion of water",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Create water portion object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWaterRecordRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateWaterRecordResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": "User unauthorized",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/water/{id}": {
+      "put": {
+        "tags": ["Water"],
+        "summary": "Update a record about a portion of water",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Update water portion object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWaterRecordRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateWaterRecordResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": "User unauthorized",
+            "content": {}
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Water"],
+        "summary": "Delete a record about a portion of water",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateWaterRecordResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {}
+          },
+          "401": {
+            "description": "User unauthorized",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/water/day": {
+      "get": {
+        "tags": ["Water"],
+        "summary": "Get records about water for a day",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "day"
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WaterRecordsByDayResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User unauthorized",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/water/month": {
+      "get": {
+        "tags": ["Water"],
+        "summary": "Get records about water for a day",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "month"
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WaterRecordsByMonthResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User unauthorized",
+            "content": {}
           }
         }
       }
@@ -224,10 +438,190 @@
       "CurrentUserResponse": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "User's id"
+          },
           "email": {
             "type": "string",
             "description": "User's email",
             "format": "email"
+          },
+          "name": {
+            "type": "string",
+            "description": "Username"
+          },
+          "waterNorm": { "type": "integer", "description": "Water norm" },
+          "weight": { "type": "integer", "description": "User's weight" },
+          "timeActive": {
+            "type": "number",
+            "description": "Time of user's phisical activity"
+          },
+          "avatarURL": { "type": "string", "description": "User's avatar url" },
+          "gender": { "type": "string", "description": "Gender" }
+        }
+      },
+      "CreateWaterRecordRequest": {
+        "type": "object",
+        "properties": {
+          "time": {
+            "type": "string",
+            "description": "Time",
+            "format": "YYYY-MM-DD-HH:MM",
+            "example": "2024-06-22-14:50"
+          },
+          "amount": {
+            "type": "integer",
+            "description": "Amount of water",
+            "format": "1 to 5000 ml",
+            "example": "100"
+          }
+        }
+      },
+      "CreateWaterRecordResponse": {
+        "type": "object",
+        "properties": {
+          "time": {
+            "type": "string",
+            "description": "Time",
+            "example": "2024-06-22-12:50"
+          },
+          "amount": {
+            "type": "integer",
+            "description": "Amount of water",
+            "example": "100"
+          },
+          "owner": {
+            "type": "string",
+            "description": "Owner's id",
+            "example": "6677396cfe1fd29932b058f5"
+          },
+          "_id": {
+            "type": "string",
+            "description": "Object's id",
+            "example": "6677396cfe1fd29932b058f5"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Object's id",
+            "example": "2024-06-22T20:51:56.759Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Object's id",
+            "example": "2024-06-22T20:51:56.759Z"
+          }
+        }
+      },
+      "UpdateUserRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "name": {
+            "type": "string",
+            "description": "Username",
+            "example": "Yura"
+          },
+          "waterNorm": {
+            "type": "integer",
+            "description": "Water norm",
+            "example": "1800"
+          },
+          "weight": {
+            "type": "integer",
+            "description": "User's weight",
+            "example": "120"
+          },
+          "timeActive": {
+            "type": "number",
+            "description": "Time of user's phisical activity",
+            "example": "2.5"
+          },
+          "avatar": {
+            "type": "string",
+            "format": "binary",
+            "description": "User's avatar"
+          },
+          "gender": { "type": "string", "description": "Gender" }
+        }
+      },
+      "WaterRecordsByDayResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "time": {
+              "type": "string",
+              "description": "Time",
+              "example": "2024-06-22-12:50"
+            },
+            "amount": {
+              "type": "integer",
+              "description": "Amount of water",
+              "example": "100"
+            },
+            "owner": {
+              "type": "string",
+              "description": "Owner's id",
+              "example": "6677396cfe1fd29932b058f5"
+            },
+            "_id": {
+              "type": "string",
+              "description": "Object's id",
+              "example": "6677396cfe1fd29932b058f5"
+            },
+            "createdAt": {
+              "type": "string",
+              "description": "Object's id",
+              "example": "2024-06-22T20:51:56.759Z"
+            },
+            "updatedAt": {
+              "type": "string",
+              "description": "Object's id",
+              "example": "2024-06-22T20:51:56.759Z"
+            }
+          }
+        }
+      },
+      "WaterRecordsByMonthResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "time": {
+              "type": "string",
+              "description": "Time",
+              "example": "2024-06-22-12:50"
+            },
+            "amount": {
+              "type": "integer",
+              "description": "Amount of water",
+              "example": "100"
+            },
+            "owner": {
+              "type": "string",
+              "description": "Owner's id",
+              "example": "6677396cfe1fd29932b058f5"
+            },
+            "_id": {
+              "type": "string",
+              "description": "Object's id",
+              "example": "6677396cfe1fd29932b058f5"
+            },
+            "createdAt": {
+              "type": "string",
+              "description": "Object's id",
+              "example": "2024-06-22T20:51:56.759Z"
+            },
+            "updatedAt": {
+              "type": "string",
+              "description": "Object's id",
+              "example": "2024-06-22T20:51:56.759Z"
+            }
           }
         }
       }
