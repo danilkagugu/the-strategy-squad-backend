@@ -6,7 +6,9 @@ dotenv.config();
 
 const auth = (req, res, next) => {
   const { authorization = "" } = req.headers;
+
   const [bearer, token] = authorization.split(" ", 2);
+
   if (bearer !== "Bearer") next(HttpError(401, "invalid token"));
 
   jwt.verify(token, process.env.SECRET_KEY, async (err, decode) => {

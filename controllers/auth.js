@@ -75,12 +75,3 @@ export const logout = async (req, res, next) => {
     next(error);
   }
 };
-
-export const getCurrentUser = async (req, res, next) => {
-  try {
-    const user = await User.findById(req.user.id);
-    res.status(200).json({ email: user.email }).end();
-  } catch (error) {
-    next(error);
-  }
-};
