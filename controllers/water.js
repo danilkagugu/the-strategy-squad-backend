@@ -16,12 +16,11 @@ export const getWaterRecordsByDay = async (req, res, next) => {
 
     const { day = today } = req.query;
 
-    console.log(today);
-
     const data = await Water.find({ owner: req.user.id });
     const filter = data.filter((el) => el.time.includes(day));
+    const waterAmount = filter.reduce((acc, el) => (acc += el.amount), 0);
 
-    res.status(200).json(filter);
+    res.status(200).json({ data: filter, waterAmount });
   } catch (error) {
     next(error);
   }

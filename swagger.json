@@ -550,40 +550,50 @@
         }
       },
       "WaterRecordsByDayResponse": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "time": {
-              "type": "string",
-              "description": "Time",
-              "example": "2024-06-22-12:50"
-            },
-            "amount": {
-              "type": "integer",
-              "description": "Amount of water",
-              "example": "100"
-            },
-            "owner": {
-              "type": "string",
-              "description": "Owner's id",
-              "example": "6677396cfe1fd29932b058f5"
-            },
-            "_id": {
-              "type": "string",
-              "description": "Object's id",
-              "example": "6677396cfe1fd29932b058f5"
-            },
-            "createdAt": {
-              "type": "string",
-              "description": "Object's id",
-              "example": "2024-06-22T20:51:56.759Z"
-            },
-            "updatedAt": {
-              "type": "string",
-              "description": "Object's id",
-              "example": "2024-06-22T20:51:56.759Z"
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "time": {
+                  "type": "string",
+                  "description": "Time",
+                  "example": "2024-06-22-12:50"
+                },
+                "amount": {
+                  "type": "integer",
+                  "description": "Amount of water",
+                  "example": "100"
+                },
+                "owner": {
+                  "type": "string",
+                  "description": "Owner's id",
+                  "example": "6677396cfe1fd29932b058f5"
+                },
+                "_id": {
+                  "type": "string",
+                  "description": "Object's id",
+                  "example": "6677396cfe1fd29932b058f5"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "description": "Object's id",
+                  "example": "2024-06-22T20:51:56.759Z"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "description": "Object's id",
+                  "example": "2024-06-22T20:51:56.759Z"
+                }
+              }
             }
+          },
+          "waterAmount": {
+            "type": "integer",
+            "description": "Full amount of water",
+            "example": "4000"
           }
         }
       },
