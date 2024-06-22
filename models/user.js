@@ -3,6 +3,10 @@ import "dotenv/config";
 
 const userSchema = new Schema(
   {
+    name: {
+      type: String,
+      default: "User",
+    },
     password: {
       type: String,
       required: [true, "Password is required"],
@@ -13,6 +17,26 @@ const userSchema = new Schema(
       unique: true,
     },
     token: {
+      type: String,
+      default: null,
+    },
+    gender: {
+      type: String,
+      default: null,
+    },
+    waterNorm: {
+      type: Number,
+      default: 2000,
+    },
+    weight: {
+      type: Number,
+      default: 0,
+    },
+    timeActive: {
+      type: Number,
+      default: 0,
+    },
+    avatarURL: {
       type: String,
       default: null,
     },
