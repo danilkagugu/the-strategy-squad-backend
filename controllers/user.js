@@ -25,17 +25,17 @@ export const getCurrentUser = async (req, res, next) => {
 export const updateUser = async (req, res, next) => {
   try {
     const { name, weight, gender, waterNorm, timeActive } = req.body;
-    const avatar = req.files ? req.files.avatar[0].path : null;
+
+    const avatar = req.file ? req.file.path : null;
 
     const updateData = {
-      name: name,
-      gender: gender,
-      weight: weight,
-      waterNorm: waterNorm,
-      timeActive: timeActive,
-      avatarURL: avatar,
+      ...(name && { name }),
+      ...(weight && { weight }),
+      ...(gender && { gender }),
+      ...(waterNorm && { waterNorm }),
+      ...(timeActive && { timeActive }),
+      ...(avatar && { avatarURL: avatar }),
     };
-    console.log(updateData);
 
     const { error } = updateSchema.validate(updateData, {
       abortEarly: false,
@@ -44,15 +44,6 @@ export const updateUser = async (req, res, next) => {
     if (typeof error !== "undefined") {
       throw HttpError(400, error.details[0].message);
     }
-
-    // const updateData = {
-    //   ...(name && { name }),
-    //   ...(weight && { weight}),
-    //   ...(gender && { gender }),
-    //   ...(waterNorm && { waterNorm}),
-    //   ...(timeActive && {timeActive}),
-    //   ...(avatar && { avatarURL: avatar }),
-    // };
 
     const userId = req.user.id;
     const updatedUser = await User.findByIdAndUpdate(userId, updateData, {

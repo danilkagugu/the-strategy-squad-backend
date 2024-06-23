@@ -22,8 +22,8 @@ const userSchema = new Schema(
     },
     gender: {
       type: String,
-      enum: ["Man", "Woman"],
-      default: "Woman",
+      enum: ["Man", "Woman", "undefined"],
+      default: "undefined",
     },
     waterNorm: {
       type: Number,

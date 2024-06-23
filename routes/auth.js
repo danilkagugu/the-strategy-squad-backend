@@ -14,14 +14,7 @@ authRouter.get("/current", authMiddleware, getCurrentUser);
 authRouter.patch(
   "/update",
   authMiddleware,
-  uploadMiddleware.fields([
-    { name: "avatar", maxCount: 1 },
-    { name: "name", maxCount: 1 },
-    { name: "weight", maxCount: 1 },
-    { name: "gender", maxCount: 1 },
-    { name: "waterNorm", maxCount: 1 },
-    { name: "timeActive", maxCount: 1 },
-  ]),
+  uploadMiddleware.single("avatar"),
   updateUser
 );
 
