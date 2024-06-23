@@ -10,16 +10,17 @@ export const getWaterRecordsByDay = async (req, res, next) => {
   try {
     const date = new Date();
     const recentYear = date.getFullYear();
-    const recentMonth = date.getMonth() + 1;
-    const recentDay = date.getDate();
+    const recentMonth = (date.getMonth() + 1).toString().padStart(2, "0");
+    const recentDay = date.getDate().toString().padStart(2, "0");
     const today = `${recentYear}-${recentMonth}-${recentDay}`;
 
     const { day = today } = req.query;
 
     const data = await Water.find({ owner: req.user.id });
     const filter = data.filter((el) => el.time.includes(day));
+    const waterAmount = filter.reduce((acc, el) => (acc += el.amount), 0);
 
-    res.status(200).json(filter);
+    res.status(200).json({ data: filter, waterAmount });
   } catch (error) {
     next(error);
   }
@@ -29,7 +30,7 @@ export const getWaterRecordsByMonth = async (req, res, next) => {
   try {
     const date = new Date();
     const recentYear = date.getFullYear();
-    const recentMonth = date.getMonth() + 1;
+    const recentMonth = (date.getMonth() + 1).toString().padStart(2, "0");
     const thisMonth = `${recentYear}-${recentMonth}`;
 
     const { month = thisMonth } = req.query;
@@ -88,6 +89,9 @@ export const deleteWaterRecord = async (req, res, next) => {
       _id: id,
       owner: req.user.id,
     });
+
+    if (data === null) throw HttpError(404);
+
     res.status(200).json(data);
   } catch (error) {
     next(error);
