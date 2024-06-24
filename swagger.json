@@ -337,7 +337,7 @@
     "/water/month": {
       "get": {
         "tags": ["Water"],
-        "summary": "Get records about water for a day",
+        "summary": "Get records about water for a Month",
         "parameters": [
           {
             "in": "query",
@@ -427,10 +427,28 @@
             "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NzRiNmY3NTRjZTY3OTg3ODRhNTE3OCIsImlhdCI6MTcxODkyNTc1NCwiZXhwIjoxNzE5MDA4NTU0fQ.MNp-9FSDv4eFVAXBIzIjG2Q_43-8J68vI057-MEiicg"
           },
           "user": {
-            "email": {
-              "type": "string",
-              "description": "User's email",
-              "format": "email"
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string",
+                "description": "User's email",
+                "format": "email"
+              },
+              "name": {
+                "type": "string",
+                "description": "Username"
+              },
+              "waterNorm": { "type": "integer", "description": "Water norm" },
+              "weight": { "type": "integer", "description": "User's weight" },
+              "timeActive": {
+                "type": "number",
+                "description": "Time of user's phisical activity"
+              },
+              "avatarURL": {
+                "type": "string",
+                "description": "User's avatar url"
+              },
+              "gender": { "type": "string", "description": "Gender" }
             }
           }
         }
