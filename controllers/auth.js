@@ -60,7 +60,15 @@ export const login = async (req, res, next) => {
 
     res.json({
       token,
-      user: { email: user.email },
+      user: {
+        email: user.email,
+        name: user.name,
+        gender: user.gender,
+        waterNorm: user.waterNorm,
+        weight: user.weight,
+        timeActive: user.timeActive,
+        avatarURL: user.avatarURL,
+      },
     });
   } catch (error) {
     next(error);
