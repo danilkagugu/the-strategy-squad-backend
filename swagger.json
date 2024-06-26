@@ -12,13 +12,21 @@
   "consumes": ["application/json", "multipart/form-data"],
   "produces": ["application/json"],
   "servers": [
-    { "url": "http://localhost:3000/api" },
+    { "url": "http://localhost:3030/api" },
     { "url": "https://the-strategy-squad-backend.onrender.com/api" }
   ],
   "tags": [
     {
       "name": "Auth",
       "description": "Authorization endpoints"
+    },
+    {
+      "name": "Users",
+      "description": "Users endpoints"
+    },
+    {
+      "name": "Water",
+      "description": "Water endpoints"
     }
   ],
 
@@ -124,7 +132,7 @@
     },
     "/users/current": {
       "get": {
-        "tags": ["Auth"],
+        "tags": ["Users"],
         "summary": "Current user info",
         "parameters": [],
         "security": [{ "Bearer": [] }],
@@ -150,7 +158,7 @@
     },
     "/users/update": {
       "patch": {
-        "tags": ["Auth"],
+        "tags": ["Users"],
         "summary": "Update user info",
         "parameters": [],
         "security": [{ "Bearer": [] }],
@@ -184,6 +192,25 @@
             "description": "User unauthorized",
             "content": {
               "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/customers": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Get amount of users",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomersResponse"
+                }
+              }
             }
           }
         }
@@ -390,15 +417,20 @@
       "RegistrationResponse": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string",
-            "description": "User's id",
-            "example": "66747d01942a774be18d98c6"
-          },
-          "email": {
-            "type": "string",
-            "description": "User's email",
-            "format": "email"
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "User's id",
+                "example": "66747d01942a774be18d98c6"
+              },
+              "email": {
+                "type": "string",
+                "description": "User's email",
+                "format": "email"
+              }
+            }
           }
         }
       },
@@ -652,6 +684,10 @@
             }
           }
         }
+      },
+      "CustomersResponse": {
+        "type": "integer",
+        "example": "15056"
       }
     },
 
