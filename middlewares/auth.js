@@ -16,9 +16,13 @@ const auth = (req, res, next) => {
 
     try {
       const user = await User.findById(decode.id);
+
       if (!user) throw HttpError(401, "Not authorized");
+
       if (user.token !== token) throw HttpError(401, "Not authorized");
+
       req.user = { id: decode.id };
+
       next();
     } catch (error) {
       next(error);
