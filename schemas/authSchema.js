@@ -21,3 +21,11 @@ export const updateSchema = Joi.object({
   timeActive: Joi.number(),
   avatarURL: Joi.string(),
 });
+
+export const updatePasswordSchema = Joi.object({
+  email: Joi.string().pattern(emailRegexp).required(),
+});
+
+// export const resetPasswordSchema = Joi.object({
+//   password: Joi.string().min(6).required(),
+// });
