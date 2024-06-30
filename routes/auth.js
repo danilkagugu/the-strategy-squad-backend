@@ -5,6 +5,7 @@ import authMiddleware from "../middlewares/auth.js";
 import refreshAuthMiddleware from "../middlewares/refreshAuth.js";
 import uploadMiddleware from "../middlewares/upload.js";
 
+
 const authRouter = express.Router();
 
 authRouter.post("/register", register);
@@ -18,5 +19,6 @@ authRouter.patch(
   uploadMiddleware.single("avatar"),
   updateUser
 );
+
 
 export default authRouter;
