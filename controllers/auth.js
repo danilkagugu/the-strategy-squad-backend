@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
 
-const { SECRET_KEY } = process.env;
+const { SECRET_KEY, REFRESH_SECRET_KEY } = process.env;
 
 export const register = async (req, res, next) => {
   try {
@@ -53,13 +53,26 @@ export const login = async (req, res, next) => {
         id: user._id,
       },
       SECRET_KEY,
+      { expiresIn: "1h" }
+    );
+
+    const refreshToken = jwt.sign(
+      {
+        id: user._id,
+      },
+      REFRESH_SECRET_KEY,
       { expiresIn: "23h" }
     );
 
-    await User.findByIdAndUpdate(user._id, { token }, { new: true });
+    await User.findByIdAndUpdate(
+      user._id,
+      { token, refreshToken },
+      { new: true }
+    );
 
     res.json({
       token,
+      refreshToken,
       user: {
         email: user.email,
         name: user.name,
@@ -85,4 +98,36 @@ export const logout = async (req, res, next) => {
 };
 
 
+export const refreshToken = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id);
+    const token = jwt.sign(
+      {
+        id: user._id,
+      },
+      SECRET_KEY,
+      { expiresIn: "15m" }
+    );
 
+    const refreshToken = jwt.sign(
+      {
+        id: user._id,
+      },
+      REFRESH_SECRET_KEY,
+      { expiresIn: "23h" }
+    );
+
+    await User.findByIdAndUpdate(
+      user._id,
+      { token, refreshToken },
+      { new: true }
+    );
+
+    res.status(200).json({
+      token,
+      refreshToken,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

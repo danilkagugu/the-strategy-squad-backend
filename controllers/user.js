@@ -38,7 +38,6 @@ export const updateUser = async (req, res, next) => {
       avatarURL = result.secure_url;
 
       await fs.unlink(req.file.path);
-      // const avatar = req.file ? req.file.path : null;
     }
 
     const updateData = {
@@ -73,7 +72,7 @@ export const updateUser = async (req, res, next) => {
       avatarURL: updatedUser.avatarURL,
       gender: updatedUser.gender,
     };
-
+    console.log(feedbackMessage);
     res.status(200).json({
       message: "User updated successfully",
       user: feedbackMessage,
