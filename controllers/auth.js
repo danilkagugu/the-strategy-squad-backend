@@ -147,7 +147,7 @@ export const sendPasswordEmail = async (req, res, next) => {
 
     await User.findByIdAndUpdate(user._id, { tokenTmp: token });
 
-    const urlToPasswordPage = `https://the-strategy-squad-frontend.vercel.app/password?token=${token}`;
+    const urlToPasswordPage = `https://the-strategy-squad-frontend.vercel.app/reset-password?token=${token}`;
 
     const html = `<h1>check email <a href="${urlToPasswordPage}"><b>link</b></a></h1>`;
 
