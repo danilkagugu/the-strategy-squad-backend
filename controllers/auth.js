@@ -97,7 +97,6 @@ export const logout = async (req, res, next) => {
   }
 };
 
-
 export const refreshToken = async (req, res, next) => {
   try {
     const user = await User.findById(req.user.id);
@@ -106,7 +105,7 @@ export const refreshToken = async (req, res, next) => {
         id: user._id,
       },
       SECRET_KEY,
-      { expiresIn: "15m" }
+      { expiresIn: "1h" }
     );
 
     const refreshToken = jwt.sign(
