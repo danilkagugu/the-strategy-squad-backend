@@ -14,7 +14,7 @@ export const loginSchema = Joi.object({
 });
 
 export const updateSchema = Joi.object({
-  name: Joi.string().min(3).max(10),
+  name: Joi.string().min(3),
   gender: Joi.string(),
   weight: Joi.number(),
   waterNorm: Joi.number(),
