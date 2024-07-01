@@ -6,6 +6,7 @@ import refreshAuthMiddleware from "../middlewares/refreshAuth.js";
 import uploadMiddleware from "../middlewares/upload.js";
 import authPasswordMiddleware from "../middlewares/authPassword.js";
 
+
 const authRouter = express.Router();
 
 authRouter.post("/register", register);
