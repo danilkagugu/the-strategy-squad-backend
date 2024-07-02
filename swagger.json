@@ -12,8 +12,8 @@
   "consumes": ["application/json", "multipart/form-data"],
   "produces": ["application/json"],
   "servers": [
-    { "url": "http://localhost:3030/api" },
-    { "url": "https://the-strategy-squad-backend.onrender.com/api" }
+    { "url": "https://the-strategy-squad-backend.onrender.com/api" },
+    { "url": "http://localhost:3030/api" }
   ],
   "tags": [
     {
@@ -107,6 +107,29 @@
         }
       }
     },
+    "/auth/google": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Google registration and login",
+        "security": [{ "google_auth": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "User unauthorized",
+            "content": {}
+          }
+        }
+      }
+    },
     "/users/logout": {
       "post": {
         "tags": ["Auth"],
@@ -156,6 +179,46 @@
         }
       }
     },
+    "/users/refreshing": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Refresh tokens",
+        "parameters": [],
+        "requestBody": {
+          "description": "Refresh token",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/refreshTokenRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/refreshTokenResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": "Refresh token is missing or invalid",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
     "/users/update": {
       "patch": {
         "tags": ["Users"],
@@ -189,6 +252,74 @@
             "content": {}
           },
           "401": {
+            "description": "User unauthorized",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/password/send/email": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Send email to update user's password",
+        "parameters": [],
+        "requestBody": {
+          "description": "Send email",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendEmailRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SendEmailResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Invalid email",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/users/password/save": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Update user's password",
+        "parameters": [],
+        "requestBody": {
+          "description": "Update password",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePasswordRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "500": {
             "description": "User unauthorized",
             "content": {
               "application/json": {}
@@ -458,6 +589,11 @@
             "description": "User's token",
             "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NzRiNmY3NTRjZTY3OTg3ODRhNTE3OCIsImlhdCI6MTcxODkyNTc1NCwiZXhwIjoxNzE5MDA4NTU0fQ.MNp-9FSDv4eFVAXBIzIjG2Q_43-8J68vI057-MEiicg"
           },
+          "refreshToken": {
+            "type": "string",
+            "description": "User's token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2N2YyZjJlMmQxMTdlOGJiMjJjMzc4ZSIsImlhdCI6MTcxOTg1MjM2OCwiZXhwIjoxNzE5OTM1MTY4fQ.kd7vTp_ZLdBUcyZqmj40gEvS-xvtETgLjCfdyKKQmJk"
+          },
           "user": {
             "type": "object",
             "properties": {
@@ -597,6 +733,66 @@
             "description": "User's avatar"
           },
           "gender": { "type": "string", "description": "Gender" }
+        }
+      },
+      "SendEmailResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Email sent",
+            "example": "check your email to update password"
+          }
+        }
+      },
+      "SendEmailRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          }
+        }
+      },
+      "UpdatePasswordRequest": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string",
+            "description": "New password",
+            "example": "1f2d!456fg"
+          },
+          "token": {
+            "type": "string",
+            "description": "Temporary token from url params",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2N2YyZjJlMmQxMTdlOGJiMjJjMzc4ZSIsImlhdCI6MTcxOTg1MjM2OCwiZXhwIjoxNzE5OTM1MTY4fQ.kd7vTp_ZLdBUcyZqmj40gEvS-xvtETgLjCfdyKKQmJk"
+          }
+        }
+      },
+      "refreshTokenRequest": {
+        "type": "object",
+        "properties": {
+          "refreshToken": {
+            "type": "string",
+            "description": "Refresh token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2N2YyZjJlMmQxMTdlOGJiMjJjMzc4ZSIsImlhdCI6MTcxOTg1MjM2OCwiZXhwIjoxNzE5OTM1MTY4fQ.kd7vTp_ZLdBUcyZqmj40gEvS-xvtETgLjCfdyKKQmJk"
+          }
+        }
+      },
+      "refreshTokenResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Refresh token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2N2YyZjJlMmQxMTdlOGJiMjJjMzc4ZSIsImlhdCI6MTcxOTg1MjQ1NywiZXhwIjoxNzE5ODU2MDU3fQ.8fy11E8KljboZZP7MY8aeV-b4WASHbv79B9zeFz6XMc"
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "Refresh token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2N2YyZjJlMmQxMTdlOGJiMjJjMzc4ZSIsImlhdCI6MTcxOTg1MjM2OCwiZXhwIjoxNzE5OTM1MTY4fQ.kd7vTp_ZLdBUcyZqmj40gEvS-xvtETgLjCfdyKKQmJk"
+          }
         }
       },
       "WaterRecordsByDayResponse": {
