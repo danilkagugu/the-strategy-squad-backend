@@ -7,7 +7,7 @@ import dotenv from "dotenv";
 dotenv.config();
 import { sendMail } from "../helpers/sendMail.js";
 
-const { SECRET_KEY, REFRESH_SECRET_KEY } = process.env;
+const { SECRET_KEY, REFRESH_SECRET_KEY, FRONTEND_URL } = process.env;
 
 export const register = async (req, res, next) => {
   try {
@@ -147,11 +147,13 @@ export const sendPasswordEmail = async (req, res, next) => {
 
     await User.findByIdAndUpdate(user._id, { tokenTmp: token });
 
-    const urlToPasswordPage = `https://the-strategy-squad-frontend.vercel.app/reset-password?token=${token}`;
+    const urlToPasswordPage = `${FRONTEND_URL}/reset-password?token=${token}`;
 
-    const html = `<h1>check email <a href="${urlToPasswordPage}"><b>link</b></a></h1>`;
+    const subject = "Password reset";
 
-    await sendMail({ to: email, html: html });
+    const html = `<p>Hello! <br /> Follow this <a href="${urlToPasswordPage}"><b>link</b></a> to reset your password for AQUATRACK<br />If you didn't ask to reset your password, you can ignore this email.</p>`;
+
+    await sendMail({ to: email, html: html, subject: subject });
 
     res.send({ message: "check your email to update password" });
   } catch (error) {
