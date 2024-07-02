@@ -149,7 +149,7 @@ export const sendPasswordEmail = async (req, res, next) => {
 
     const urlToPasswordPage = `https://the-strategy-squad-frontend.vercel.app/reset-password?token=${token}`;
 
-    const html = `<h1>check email <a href="${urlToPasswordPage}"><b>link</b></a></h1>`;
+    const html = `<h1>To reset your password follow the link<a href="${urlToPasswordPage}"><b>link</b></a></h1>`;
 
     await sendMail({ to: email, html: html });
 
