@@ -14,10 +14,11 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export async function sendMail({ to, html }) {
+export async function sendMail({ to, html, subject }) {
   await transporter.sendMail({
     from: process.env.SMTP_UKRNET_USER,
     to: to,
+    subject: subject,
     html: html,
   });
 }
