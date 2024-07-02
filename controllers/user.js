@@ -61,7 +61,6 @@ export const updateUser = async (req, res, next) => {
     const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
       new: true,
     });
-    console.log();
     const feedbackMessage = {
       id: updatedUser._id,
       email: updatedUser.email,
@@ -72,7 +71,6 @@ export const updateUser = async (req, res, next) => {
       avatarURL: updatedUser.avatarURL,
       gender: updatedUser.gender,
     };
-    console.log(feedbackMessage);
     res.status(200).json({
       message: "User updated successfully",
       user: feedbackMessage,
