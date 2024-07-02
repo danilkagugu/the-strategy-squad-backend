@@ -142,7 +142,7 @@ export const sendPasswordEmail = async (req, res, next) => {
     }
 
     const token = jwt.sign({ id: user._id }, SECRET_KEY, {
-      expiresIn: "15m",
+      expiresIn: "1h",
     });
 
     await User.findByIdAndUpdate(user._id, { tokenTmp: token });
@@ -160,19 +160,30 @@ export const sendPasswordEmail = async (req, res, next) => {
 };
 
 export const updateNewPassword = async (req, res, next) => {
-  try {
-    const { password } = req.body;
+  const { token, password } = req.body;
 
-    const hashPassword = await bcrypt.hash(password, 10);
-
-    await User.findByIdAndUpdate(req.user._id, {
-      password: hashPassword,
-    });
-
-    res.status(204);
-  } catch (error) {
-    next(error);
+  if (!token) {
+    throw HttpError(401, "invalid token 2");
   }
+  jwt.verify(token, SECRET_KEY, async (err, decode) => {
+    if (err) next(HttpError(401, "invalid token 3"));
+    try {
+      const user = await User.findById(decode.id);
+
+      if (!user || user.tokenTmp !== token) {
+        throw HttpError(401, "not authorized");
+      }
+
+      const hashPassword = await bcrypt.hash(password, 10);
+
+      await User.findByIdAndUpdate(decode.id, {
+        password: hashPassword,
+        tokenTmp: null,
+      });
+
+      res.status(204).end();
+    } catch (error) {
+      next(error);
+    }
+  });
 };
-
-
