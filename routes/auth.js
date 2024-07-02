@@ -1,10 +1,17 @@
 import express from "express";
-import { login, logout, register, refreshToken } from "../controllers/auth.js";
+import {
+  login,
+  logout,
+  register,
+  refreshToken,
+  sendPasswordEmail,
+  updateNewPassword,
+} from "../controllers/auth.js";
 import { getCurrentUser, updateUser } from "../controllers/user.js";
 import authMiddleware from "../middlewares/auth.js";
 import refreshAuthMiddleware from "../middlewares/refreshAuth.js";
 import uploadMiddleware from "../middlewares/upload.js";
-
+// import authPasswordMiddleware from "../middlewares/authPassword.js";
 
 const authRouter = express.Router();
 
@@ -20,5 +27,7 @@ authRouter.patch(
   updateUser
 );
 
+authRouter.post("/password/send/email", sendPasswordEmail);
+authRouter.post("/password/save", updateNewPassword);
 
 export default authRouter;

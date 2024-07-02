@@ -5,6 +5,7 @@ import HttpError from "../helpers/HttpError.js";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 dotenv.config();
+import { sendMail } from "../helpers/sendMail.js";
 
 const { SECRET_KEY, REFRESH_SECRET_KEY } = process.env;
 
@@ -129,4 +130,60 @@ export const refreshToken = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+export const sendPasswordEmail = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw HttpError(404, "Invalid email");
+    }
+
+    const token = jwt.sign({ id: user._id }, SECRET_KEY, {
+      expiresIn: "1h",
+    });
+
+    await User.findByIdAndUpdate(user._id, { tokenTmp: token });
+
+    const urlToPasswordPage = `https://the-strategy-squad-frontend.vercel.app/reset-password?token=${token}`;
+
+    const html = `<h1>check email <a href="${urlToPasswordPage}"><b>link</b></a></h1>`;
+
+    await sendMail({ to: email, html: html });
+
+    res.send({ message: "check your email to update password" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateNewPassword = async (req, res, next) => {
+  const { token, password } = req.body;
+
+  if (!token) {
+    throw HttpError(401, "invalid token 2");
+  }
+  jwt.verify(token, SECRET_KEY, async (err, decode) => {
+    if (err) next(HttpError(401, "invalid token 3"));
+    try {
+      const user = await User.findById(decode.id);
+
+      if (!user || user.tokenTmp !== token) {
+        throw HttpError(401, "not authorized");
+      }
+
+      const hashPassword = await bcrypt.hash(password, 10);
+
+      await User.findByIdAndUpdate(decode.id, {
+        password: hashPassword,
+        tokenTmp: null,
+      });
+
+      res.status(204).end();
+    } catch (error) {
+      next(error);
+    }
+  });
 };
